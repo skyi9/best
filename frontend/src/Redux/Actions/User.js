@@ -8,14 +8,15 @@ export const loginUser = (email, password) => async (dispatch) => {
             type: "LoginRequest"
         })
 
-        const { data } = await axios.post("http://localhost:5000/api/v1/login", { email, password }, {
+        const { data } = await axios.post("/api/v1/login", { email, password }, {
             headers: {
                 'content-type': 'application/json'
-            }
+            },
+            withCredentials: true, // Allow sending cookies
         })
         dispatch({
             type: "LoginSuccess",
-            payload: data
+            payload: data.user
         })
 
     } catch (error) {

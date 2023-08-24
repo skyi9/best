@@ -53,10 +53,10 @@ exports.login = async (req, res) => {
         }
         const token = await user.generateToken();
         res.cookie("token", JSON.stringify(token), {
-            secure: true,
+            secure: false,
             httpOnly: true,
             withCredentials: true,
-            sameSite: "None",
+            sameSite: "Lax",
         })
         res.status(201).json({
             success: true,
