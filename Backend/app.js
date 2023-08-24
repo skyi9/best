@@ -22,9 +22,11 @@ app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }))
 
 //import routes
 const user = require('./routes/user');
+const post = require('./routes/post');
 
 //using routes
 app.use("/api/v1", user);
+app.use("/api/v1", post);
 
 
 module.exports = app;
