@@ -74,3 +74,114 @@ exports.login = async (req, res) => {
         })
     }
 }
+
+exports.logout = async (req, res) => {
+    try {
+        res
+            .status(200)
+            .cookie("token", null, { expires: new Date(Date.now()), httpOnly: true })
+            .json({
+                success: true,
+                message: "Logged out",
+            });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+exports.followUser = async (req, res) => {
+    try {
+        const userToFollow = await User.findById(req.params.id);
+        const loggedInUser = await User.findById(req.user._id);
+        if (!userToFollow) {
+            return res.status(400).json({
+                success: false,
+                message: "user not found"
+            })
+        }
+        if (loggedInUser.following.includes(userToFollow._id)) {
+            const userToFollowIdx = loggedInUser.following.indexOf(userToFollow._id);
+            loggedInUser.following.splice(userToFollowIdx, 1);
+            await loggedInUser.save();
+            const loggedInUserIdx = userToFollow.followers.indexOf(loggedInUser._id);
+            userToFollow.followers.splice(loggedInUserIdx, 1);
+            await userToFollow.save();
+
+            res.status(200).json({
+                success: true,
+                message: "user unfollowed"
+            })
+        } else {
+            loggedInUser.following.push(userToFollow._id);
+            await loggedInUser.save();
+            userToFollow.followers.push(loggedInUser._id);
+            await userToFollow.save();
+            res.status(200).json({
+                success: false,
+                message: "user followed"
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: true,
+            message: error.message
+        })
+    }
+}
+
+exports.updatePassword = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select("+password");
+        const { oldPassword, newPassword } = req.body;
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "password cannot be empty"
+            })
+        }
+        const isMatch = await user.matchPassword(oldPassword);
+        if (!isMatch) {
+            res.status(400).json({
+                success: false,
+                message: "incorrect password"
+            })
+        }
+        user.password = newPassword;
+        await user.save();
+        res.status(200).json({
+            success: true,
+            message: "password updated"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: true,
+            message: error.message
+        })
+    }
+}
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        const { name, email, avatar } = req.body;
+        if (name) {
+            user.name = name;
+        }
+        if (email) {
+            user.email = email;
+        }
+        await user.save();
+        res.status(200).json({
+            success: true,
+            message: "profile updated"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: true,
+            message: error.message
+        })
+    }
+}

@@ -98,3 +98,55 @@ exports.likeAndUnlikePost = async (req, res) => {
         });
     }
 }
+
+exports.getPostsOfFollowing = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        console.log(user.following);
+        const posts = await Post.find({
+            owner: {
+                $in: user.following
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            posts
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+exports.updateCaption = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(400).json({
+                success: false,
+                message: "post not found"
+            })
+        }
+        if (req.user._id.toString() !== post.owner.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: "unAuthorized"
+            })
+        }
+        post.caption = req.body.caption;
+        await post.save();
+        res.status(200).json({
+            success: true,
+            message: "caption updated"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
