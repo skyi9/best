@@ -1,7 +1,5 @@
 import { createReducer } from "@reduxjs/toolkit";
-const initialState = {
-    isAuthenticated: false
-}
+const initialState = {};
 export const userReducer = createReducer(initialState, {
 
     LoginRequest: (state) => {
@@ -45,4 +43,38 @@ export const userReducer = createReducer(initialState, {
         state.error = action.payload;
         state.isAuthenticated = false;
     },
+})
+
+export const postOfFollowingReducer = createReducer(initialState, {
+    PostOfFollowingRequest: (state) => {
+        state.loading = true;
+    },
+    PostOfFollowingSuccess: (state, action) => {
+        state.loading = false;
+        state.posts = action.payload;
+    },
+    PostOfFollowingFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+    },
+    clearError: (state) => {
+        state.error = null;
+    }
+})
+
+export const allUsersReducer = createReducer(initialState, {
+    AllUsersRequest: (state) => {
+        state.loading = true;
+    },
+    AllUserSuccess: (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+    },
+    AllUsersFailure: (state, action) => {
+        state.loading = false;
+        state.error = action.payload
+    },
+    clearError: (state) => {
+        state.error = null;
+    }
 })

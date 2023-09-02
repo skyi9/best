@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { loadUser } from "./Redux/Actions/User";
+import Home from "./Components/Home/Home";
 
 function App() {
   const dispatch = useDispatch();
@@ -16,8 +17,9 @@ function App() {
   return (
     <>
       <Router>
+        {isAuthenticated && <Header />}
         <Routes>
-          <Route path="/" element={isAuthenticated ? <Header /> : <Login />} />
+          <Route path="/" element={isAuthenticated ? <Home /> : <Login />} />
         </Routes>
       </Router>
     </>

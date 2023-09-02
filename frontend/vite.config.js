@@ -9,4 +9,7 @@ export default defineConfig({
       '/api': 'http://localhost:5000', // Change this URL to match your backend API
     },
   },
+  define: {
+    'process.env.DISABLE_VUE_DEVTOOLS': 'true', // Disable Vue Devtools warnings
+  },
 })
