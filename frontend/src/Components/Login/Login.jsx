@@ -1,51 +1,53 @@
-import "./login.css";
+import { useState } from "react";
+import "./Login.css";
+import { Typography, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../Redux/Actions/User";
-import { useState } from "react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const dispatch = useDispatch();
 
-  const login = (e) => {
+  const loginHandler = (e) => {
     e.preventDefault();
     dispatch(loginUser(email, password));
-    console.log(email, password);
   };
 
   return (
-    <div>
-      <div className="login-container">
-        <h2>Login</h2>
-        <form onSubmit={login}>
-          <div className="input-group">
-            <label htmlFor="email">Email:</label>
-            <input
-              type="emal"
-              placeholder="email"
-              value={email}
-              required
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="input-group">
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              placeholder="password"
-              value={password}
-              autoComplete="false"
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button className="login-button" type="submit">
-            Log In
-          </button>
-        </form>
-      </div>
+    <div className="login">
+      <form className="loginForm" onSubmit={loginHandler}>
+        <Typography variant="h3" style={{ padding: "2vmax" }}>
+          Social Aap
+        </Typography>
+
+        <input
+          type="email"
+          placeholder="Email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <Link to="/forgot/password">
+          <Typography>Forgot Password?</Typography>
+        </Link>
+
+        <Button type="submit">Login</Button>
+
+        <Link to="/register">
+          <Typography>New User?</Typography>
+        </Link>
+      </form>
     </div>
   );
 };

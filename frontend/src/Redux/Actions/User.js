@@ -1,9 +1,7 @@
 import axios from 'axios'
 
 export const loginUser = (email, password) => async (dispatch) => {
-
     try {
-
         dispatch({
             type: "LoginRequest"
         })
@@ -18,11 +16,28 @@ export const loginUser = (email, password) => async (dispatch) => {
             type: "LoginSuccess",
             payload: data.user
         })
-
     } catch (error) {
         dispatch({
-            type: "LoginSuccess",
+            type: "LoginFailure",
             payload: error.message
         })
     }
-}
+};
+
+export const loadUser = () => async (dispatch) => {
+    try {
+        dispatch({
+            type: "LoadUserRequest",
+        });
+        const { data } = await axios.get("/api/v1/me");
+        dispatch({
+            type: "LoadUserSuccess",
+            payload: data.user,
+        });
+    } catch (error) {
+        dispatch({
+            type: "LoadUserFailure",
+            payload: error.response.data.message,
+        });
+    }
+};
